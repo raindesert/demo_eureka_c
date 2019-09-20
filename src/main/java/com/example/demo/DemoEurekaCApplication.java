@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +22,7 @@ public class DemoEurekaCApplication {
     @Value("${server.port}")
     String port;
     @RequestMapping("/hi")
-    public String home(@RequestParam String name) {
+    public String home(HttpServletRequest request,@RequestParam String name) {
         return "hi "+name+",i am from port:" +port;
     }
 }
