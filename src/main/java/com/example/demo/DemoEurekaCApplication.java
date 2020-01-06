@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,10 +33,19 @@ public class DemoEurekaCApplication {
   String port;
   @RequestMapping("/hi")
   public String home(HttpServletRequest request,@RequestParam String name) {
-    if(cache.get("name")!=null) {
-      System.out.println("from cache");
-      return "hi "+cache.get("name")+",i am from port:" +port;
+    Lock lock = instance.getLock("locktest");
+    try {
+      lock.lock();
+      if (cache.get("name") != null) {
+        System.out.println("from cache");
+        return "hi " + cache.get("name") + ",i am from port:" + port;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      lock.unlock();
     }
+    
     cache.put("name",name);
     return "hi "+name+",i am from port:" +port;
   }
